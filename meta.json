@@ -1,0 +1,13 @@
+{
+  "module_id": "hipsterbrown:candy-bucket",
+  "visibility": "private",
+  "url": "https://github.com/hipsterbrown/viam-candy-bucket",
+  "description": "A Viam modular service to package a python program for a smart candy bucket",
+  "models": [
+    {
+      "api": "hipsterbrown:service:code",
+      "model": "hipsterbrown:code:candy_bucket"
+    }
+  ],
+  "entrypoint": "run.sh"
+}
