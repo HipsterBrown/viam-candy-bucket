@@ -1,0 +1,6 @@
+audioout @ git+https://github.com/viam-labs/audioout.git@main
+viam-sdk
+RPI.GPIO
+adafruit-circuitpython-ws2801
+python-dotenv
+rgb @ git+https://github.com/hipsterbrown/viam-ws2801.git@main
