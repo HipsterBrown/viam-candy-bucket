@@ -3,6 +3,9 @@ import sys
 
 from viam.module.module import Module
 from .code import Code, candy_bucket
+from viam.logging import getLogger
+
+LOGGER = getLogger(__name__)
 
 
 async def main(address: str):
@@ -11,6 +14,8 @@ async def main(address: str):
     Args:
         address (str): The address to serve the module on
     """
+    LOGGER.info("Starting candy bucket module")
+    LOGGER.info(address)
     module = Module(address)
     module.add_model_from_registry(Code.SUBTYPE, candy_bucket.MODEL)
     await module.start()

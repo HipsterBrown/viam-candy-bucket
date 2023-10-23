@@ -48,43 +48,44 @@ class candy_bucket(Code, Reconfigurable):
     # Validates JSON Configuration
     @classmethod
     def validate(cls, config: ComponentConfig) -> Sequence[str]:
-        attrs = struct_to_dict(config.attributes)
+        # attrs = struct_to_dict(config.attributes)
         LOGGER.info("<-----VALIDATING CANDY BUCKET----->")
-        LOGGER.info(attrs)
-        board_name = attrs.get("board", "")
-        assert isinstance(board_name, str)
-        if board_name == "":
-            raise Exception(
-                "A board attribute must be defined with the name of the board component"
-            )
+        LOGGER.info(config.attributes)
+        # LOGGER.info(attrs)
+        # board_name = attrs.get("board", "")
+        # assert isinstance(board_name, str)
+        # if board_name == "":
+        #     raise Exception(
+        #         "A board attribute must be defined with the name of the board component"
+        #     )
 
-        camera_name = attrs.get("camera", "")
-        assert isinstance(camera_name, str)
-        if camera_name == "":
-            raise Exception(
-                "A camera attribute must be defined with the name of the camera component"
-            )
+        # camera_name = attrs.get("camera", "")
+        # assert isinstance(camera_name, str)
+        # if camera_name == "":
+        #     raise Exception(
+        #         "A camera attribute must be defined with the name of the camera component"
+        #     )
 
-        motion_sensor_name = attrs.get("motion_sensor", "")
-        assert isinstance(motion_sensor_name, str)
-        if motion_sensor_name == "":
-            raise Exception(
-                "A motion_sensor attribute must be defined with the name of the motion_sensor component"
-            )
+        # motion_sensor_name = attrs.get("motion_sensor", "")
+        # assert isinstance(motion_sensor_name, str)
+        # if motion_sensor_name == "":
+        #     raise Exception(
+        #         "A motion_sensor attribute must be defined with the name of the motion_sensor component"
+        #     )
 
-        speaker_name = attrs.get("speaker", "")
-        assert isinstance(speaker_name, str)
-        if speaker_name == "":
-            raise Exception(
-                "A speaker attribute must be defined with the name of the speaker component"
-            )
+        # speaker_name = attrs.get("speaker", "")
+        # assert isinstance(speaker_name, str)
+        # if speaker_name == "":
+        #     raise Exception(
+        #         "A speaker attribute must be defined with the name of the speaker component"
+        #     )
 
-        lights_name = attrs.get("lights", "")
-        assert isinstance(lights_name, str)
-        if lights_name == "":
-            raise Exception(
-                "A lights attribute must be defined with the name of the lights component"
-            )
+        # lights_name = attrs.get("lights", "")
+        # assert isinstance(lights_name, str)
+        # if lights_name == "":
+        #     raise Exception(
+        #         "A lights attribute must be defined with the name of the lights component"
+        #     )
 
         LOGGER.info("<-----VALIDATED CANDY BUCKET----->")
         # return [board_name, camera_name, motion_sensor_name, speaker_name, lights_name]
@@ -123,10 +124,10 @@ class candy_bucket(Code, Reconfigurable):
 
         LOGGER.info("<-----CONFIGURED CANDY BUCKET----->")
 
-        if self.started:
-            self.started.cancel()
+        # if self.started:
+        #     self.started.cancel()
 
-        self.started = asyncio.create_task(self.start())
+        # self.started = asyncio.create_task(self.start())
 
         return
 

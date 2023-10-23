@@ -7,6 +7,12 @@ from viam.resource.registry import Registry, ResourceCreatorRegistration
 from .api import Code, CodeClient, CodeRPCService
 from .candy_bucket import candy_bucket
 
+from viam.logging import getLogger
+
+LOGGER = getLogger(__name__)
+
+LOGGER.info("CANDY BUCKET: registering subtype and resource creators")
+
 Registry.register_subtype(
     ResourceRegistration(
         Code, CodeRPCService, lambda name, channel: CodeClient(name, channel)
