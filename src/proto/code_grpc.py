@@ -6,22 +6,25 @@ import typing
 
 import grpclib.const
 import grpclib.client
+
 if typing.TYPE_CHECKING:
     import grpclib.server
 
 import google.api.annotations_pb2
-import code_pb2
+from . import code_pb2
 
 
 class CodeServiceBase(abc.ABC):
-
     @abc.abstractmethod
-    async def Echo(self, stream: 'grpclib.server.Stream[code_pb2.EchoRequest, code_pb2.EchoResponse]') -> None:
+    async def Echo(
+        self,
+        stream: "grpclib.server.Stream[code_pb2.EchoRequest, code_pb2.EchoResponse]",
+    ) -> None:
         pass
 
     def __mapping__(self) -> typing.Dict[str, grpclib.const.Handler]:
         return {
-            '/hipsterbrown.services.code.v1.CodeService/Echo': grpclib.const.Handler(
+            "/hipsterbrown.service.code.v1.CodeService/Echo": grpclib.const.Handler(
                 self.Echo,
                 grpclib.const.Cardinality.UNARY_UNARY,
                 code_pb2.EchoRequest,
@@ -31,11 +34,10 @@ class CodeServiceBase(abc.ABC):
 
 
 class CodeServiceStub:
-
     def __init__(self, channel: grpclib.client.Channel) -> None:
         self.Echo = grpclib.client.UnaryUnaryMethod(
             channel,
-            '/hipsterbrown.services.code.v1.CodeService/Echo',
+            "/hipsterbrown.service.code.v1.CodeService/Echo",
             code_pb2.EchoRequest,
             code_pb2.EchoResponse,
         )

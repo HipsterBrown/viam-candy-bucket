@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package hipsterbrown.services.code.v1;
+package hipsterbrown.service.code.v1;
 
 import "google/api/annotations.proto";
 
