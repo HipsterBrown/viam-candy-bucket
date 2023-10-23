@@ -36,7 +36,7 @@ from ..proto.code_grpc import CodeServiceBase, CodeServiceStub
 from ..proto.code_pb2 import EchoRequest, EchoResponse
 
 
-class Code(ServiceBase):
+class CodeService(ServiceBase):
     """service to use with the code module"""
 
     SUBTYPE: Final = Subtype("hipsterbrown", RESOURCE_TYPE_SERVICE, "code")
@@ -49,7 +49,7 @@ class Code(ServiceBase):
 class CodeRPCService(CodeServiceBase, ResourceRPCServiceBase):
     """gRPC service for the Code service"""
 
-    RESOURCE_TYPE = Code
+    RESOURCE_TYPE = CodeService
 
     # update with actual API methods
     async def Echo(self, stream: Stream[EchoRequest, EchoResponse]) -> None:
@@ -61,7 +61,7 @@ class CodeRPCService(CodeServiceBase, ResourceRPCServiceBase):
         await stream.send_message(EchoResponse(text=resp))
 
 
-class CodeClient(Code):
+class CodeClient(CodeService):
     """gRPC client for the Code Service"""
 
     def __init__(self, name: str, channel: Channel) -> None:

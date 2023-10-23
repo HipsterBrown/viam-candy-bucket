@@ -13,7 +13,7 @@ from viam.resource.base import ResourceBase
 from viam.resource.types import Model, ModelFamily
 from viam.utils import struct_to_dict
 
-from .api import Code
+from .api import CodeService
 from viam.logging import getLogger
 
 import os
@@ -23,7 +23,7 @@ LOGGER = getLogger(__name__)
 SPOOKY_SOUND = os.path.abspath("./ghostly_whisper.mp3")
 
 
-class candy_bucket(Code, Reconfigurable):
+class candy_bucket(CodeService, Reconfigurable):
     MODEL: ClassVar[Model] = Model(ModelFamily("hipsterbrown", "code"), "candy_bucket")
 
     board: Board
@@ -129,7 +129,7 @@ class candy_bucket(Code, Reconfigurable):
 
         # self.started = asyncio.create_task(self.start())
 
-        return
+        return self
 
     """ Implement the methods the Viam RDK defines for the Code API (hipsterbrown:services:code) """
 
