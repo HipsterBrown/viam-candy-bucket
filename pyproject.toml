@@ -1,0 +1,12 @@
+[project]
+name = "candy_bucket"
+version = "0.0.1"
+authors = [
+  { name="Hipsterbrown", email="headhipster@hipsterbrown.com" },
+]
+description = "A Viam modular service to package a python program"
+readme = "README.md"
+requires-python = ">=3.7"
+
+[project.urls]
+"Homepage" = "https://github.com/hipsterbrown/viam-candy-bucket"
