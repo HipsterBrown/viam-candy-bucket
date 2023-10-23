@@ -1,6 +1,6 @@
 [project]
 name = "candy_bucket"
-version = "0.0.5"
+version = "0.0.6"
 authors = [
   { name="Hipsterbrown", email="headhipster@hipsterbrown.com" },
 ]
