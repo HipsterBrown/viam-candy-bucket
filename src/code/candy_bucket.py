@@ -26,7 +26,6 @@ SPOOKY_SOUND = os.path.abspath("./ghostly_whisper.mp3")
 class candy_bucket(Code, Reconfigurable):
     MODEL: ClassVar[Model] = Model(ModelFamily("hipsterbrown", "code"), "candy_bucket")
 
-    # create any class parameters here, 'some_pin' is used as an example (change/add as needed)
     board: Board
     camera: Camera
     motion_sensor: Board.DigitalInterrupt
@@ -84,12 +83,14 @@ class candy_bucket(Code, Reconfigurable):
                 "A lights attribute must be defined with the name of the lights component"
             )
 
-        return [board_name, camera_name, motion_sensor_name, speaker_name, lights_name]
+        # return [board_name, camera_name, motion_sensor_name, speaker_name, lights_name]
+        return []
 
     # Handles attribute reconfiguration
     def reconfigure(
         self, config: ComponentConfig, dependencies: Mapping[ResourceName, ResourceBase]
     ):
+        LOGGER.info("Configuring Candy Bucket!")
         attrs = struct_to_dict(config.attributes)
         board_name = attrs.get("board")
         camera_name = attrs.get("camera")
@@ -124,6 +125,9 @@ class candy_bucket(Code, Reconfigurable):
         return
 
     """ Implement the methods the Viam RDK defines for the Code API (hipsterbrown:services:code) """
+
+    async def echo(self) -> str:
+        return "Echo"
 
     async def start(self):
         LOGGER.info("Starting up candy_bucket program!")
