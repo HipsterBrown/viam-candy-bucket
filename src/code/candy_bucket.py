@@ -40,6 +40,7 @@ class candy_bucket(Code, Reconfigurable):
     def new(
         cls, config: ComponentConfig, dependencies: Mapping[ResourceName, ResourceBase]
     ) -> Self:
+        LOGGER.info("<-----CREATING NEW CANDY BUCKET----->")
         my_class = cls(config.name)
         my_class.reconfigure(config, dependencies)
         return my_class
@@ -48,6 +49,8 @@ class candy_bucket(Code, Reconfigurable):
     @classmethod
     def validate(cls, config: ComponentConfig) -> Sequence[str]:
         attrs = struct_to_dict(config.attributes)
+        LOGGER.info("<-----VALIDATING CANDY BUCKET----->")
+        LOGGER.info(attrs)
         board_name = attrs.get("board", "")
         assert isinstance(board_name, str)
         if board_name == "":
@@ -83,6 +86,7 @@ class candy_bucket(Code, Reconfigurable):
                 "A lights attribute must be defined with the name of the lights component"
             )
 
+        LOGGER.info("<-----VALIDATED CANDY BUCKET----->")
         # return [board_name, camera_name, motion_sensor_name, speaker_name, lights_name]
         return []
 
@@ -90,7 +94,7 @@ class candy_bucket(Code, Reconfigurable):
     def reconfigure(
         self, config: ComponentConfig, dependencies: Mapping[ResourceName, ResourceBase]
     ):
-        LOGGER.info("Configuring Candy Bucket!")
+        LOGGER.info("<-----CONFIGURING CANDY BUCKET----->")
         attrs = struct_to_dict(config.attributes)
         board_name = attrs.get("board")
         camera_name = attrs.get("camera")
@@ -116,6 +120,8 @@ class candy_bucket(Code, Reconfigurable):
         self.motion_sensor_name = motion_sensor_name
         self.speaker = cast(Audioout, speaker)
         self.lights = cast(Rgb, lights)
+
+        LOGGER.info("<-----CONFIGURED CANDY BUCKET----->")
 
         if self.started:
             self.started.cancel()
@@ -158,6 +164,7 @@ class candy_bucket(Code, Reconfigurable):
         LOGGER.info(results)
 
     async def stop(self):
+        LOGGER.info("<-----CLOSING CANDY BUCKET----->")
         if self.started:
             self.started.cancel()
             await self.started
