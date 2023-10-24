@@ -2,3 +2,4 @@ audioout @ git+https://github.com/viam-labs/audioout.git@main
 ws2801 @ git+https://github.com/hipsterbrown/viam-ws2801.git@main
 pygame
 viam-sdk
+python-dotenv

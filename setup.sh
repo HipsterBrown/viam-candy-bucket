@@ -23,7 +23,15 @@ else
 fi
 
 source .env
-echo "creating virtualenv at $VIRTUAL_ENV"
-python3 -m venv $VIRTUAL_ENV
-echo "installing dependencies from requirements.txt"
-$VIRTUAL_ENV/bin/pip install -r requirements.txt
+if [ ! -d "$VIRTUAL_ENV" ]; then
+  echo "creating virtualenv at $VIRTUAL_ENV"
+  python3 -m venv $VIRTUAL_ENV
+fi
+if [ ! -f .installed ]; then
+  echo "installing dependencies from requirements.txt"
+  $VIRTUAL_ENV/bin/pip install -r requirements.txt
+
+  if [ $? -eq 0 ]; then
+    touch .installed
+  fi
+fi
