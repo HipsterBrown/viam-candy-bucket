@@ -96,31 +96,33 @@ class candy_bucket(CodeService, Reconfigurable):
         self, config: ComponentConfig, dependencies: Mapping[ResourceName, ResourceBase]
     ):
         LOGGER.info("<-----CONFIGURING CANDY BUCKET----->")
-        attrs = struct_to_dict(config.attributes)
-        board_name = attrs.get("board")
-        camera_name = attrs.get("camera")
-        motion_sensor_name = attrs.get("motion_sensor")
-        speaker_name = attrs.get("speaker")
-        lights_name = attrs.get("lights")
+        LOGGER.info(config.attributes)
+        LOGGER.info(dependencies)
+        # attrs = struct_to_dict(config.attributes)
+        # board_name = attrs.get("board")
+        # camera_name = attrs.get("camera")
+        # motion_sensor_name = attrs.get("motion_sensor")
+        # speaker_name = attrs.get("speaker")
+        # lights_name = attrs.get("lights")
 
-        assert (
-            isinstance(board_name, str)
-            and isinstance(camera_name, str)
-            and isinstance(motion_sensor_name, str)
-            and isinstance(speaker_name, str)
-            and isinstance(lights_name, str)
-        )
+        # assert (
+        #     isinstance(board_name, str)
+        #     and isinstance(camera_name, str)
+        #     and isinstance(motion_sensor_name, str)
+        #     and isinstance(speaker_name, str)
+        #     and isinstance(lights_name, str)
+        # )
 
-        board = dependencies[Board.get_resource_name(board_name)]
-        camera = dependencies[Camera.get_resource_name(camera_name)]
-        speaker = dependencies[Audioout.get_resource_name(speaker_name)]
-        lights = dependencies[Rgb.get_resource_name(lights_name)]
+        # board = dependencies[Board.get_resource_name(board_name)]
+        # camera = dependencies[Camera.get_resource_name(camera_name)]
+        # speaker = dependencies[Audioout.get_resource_name(speaker_name)]
+        # lights = dependencies[Rgb.get_resource_name(lights_name)]
 
-        self.board = cast(Board, board)
-        self.camera = cast(Camera, camera)
-        self.motion_sensor_name = motion_sensor_name
-        self.speaker = cast(Audioout, speaker)
-        self.lights = cast(Rgb, lights)
+        # self.board = cast(Board, board)
+        # self.camera = cast(Camera, camera)
+        # self.motion_sensor_name = motion_sensor_name
+        # self.speaker = cast(Audioout, speaker)
+        # self.lights = cast(Rgb, lights)
 
         LOGGER.info("<-----CONFIGURED CANDY BUCKET----->")
 
