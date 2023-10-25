@@ -14,7 +14,7 @@ from viam.components.camera import Camera
 from viam.logging import getLogger
 
 LOGGER = getLogger(__name__)
-SPOOKY_SOUND = os.path.abspath("./code/ghostly_whisper.mp3")
+SPOOKY_SOUND = os.path.abspath("./src/ghostly_whisper.mp3")
 
 
 async def main():
