@@ -1,6 +1,5 @@
 import asyncio
 import os
-import sys
 from dotenv import dotenv_values
 
 from audioout import Audioout
@@ -10,11 +9,13 @@ from viam.robot.client import RobotClient
 from viam.rpc.dial import Credentials, DialOptions
 from viam.components.board import Board
 from viam.components.camera import Camera
+from viam.services.vision import VisionClient
 
 from viam.logging import getLogger
 
 LOGGER = getLogger(__name__)
 SPOOKY_SOUND = os.path.abspath("./src/ghostly_whisper.mp3")
+DROP_THRESHOLD = 340
 
 
 async def main():
@@ -33,6 +34,7 @@ class CandyBucket:
     motion_sensor: Board.DigitalInterrupt
     speaker: Audioout
     lights: Rgb
+    candy_detector: VisionClient
     last_tick: int = 0
     q: asyncio.Queue
 
@@ -47,6 +49,7 @@ class CandyBucket:
         motion_sensor_name = self.config.get("MOTION_SENSOR")
         speaker_name = self.config.get("SPEAKER")
         lights_name = self.config.get("LIGHTS")
+        vision_service_name = self.config.get("VISION_SERVICE")
 
         assert (
             isinstance(robot_location, str)
@@ -56,6 +59,7 @@ class CandyBucket:
             and isinstance(motion_sensor_name, str)
             and isinstance(speaker_name, str)
             and isinstance(lights_name, str)
+            and isinstance(vision_service_name, str)
         )
         robot = await self.connect()
         self.board = Board.from_robot(robot, board_name)
@@ -65,6 +69,7 @@ class CandyBucket:
         )
         self.speaker = Audioout.from_robot(robot, name=speaker_name)
         self.lights = Rgb.from_robot(robot, lights_name)
+        self.candy_detector = VisionClient.from_robot(robot, vision_service_name)
 
         LOGGER.info("<-----STARTING CANDY BUCKET----->")
         try:
@@ -96,7 +101,7 @@ class CandyBucket:
         LOGGER.info("Stopped lights animation")
 
         LOGGER.info("Playing spooky sound")
-        await self.speaker.play(SPOOKY_SOUND)
+        await self.speaker.play(SPOOKY_SOUND, 0, 0, 50)
 
         LOGGER.info("Starting working tasks")
         motion_task = asyncio.create_task(self.poll_motion())
@@ -122,16 +127,33 @@ class CandyBucket:
             LOGGER.info("Waiting for motion event")
             _pin_value = await self.q.get()
             LOGGER.info("Handling motion event")
-            image = await self.camera.get_image()
-            LOGGER.info(f"camera get_image value: {image}")
-            LOGGER.info("Animating!")
-            animation = asyncio.create_task(self.lights.animate())
-            sound = asyncio.create_task(self.speaker.play(SPOOKY_SOUND, 0, 0, 50))
-            await asyncio.sleep(5)
-            await self.lights.stop()
-            await self.lights.clear()
-            LOGGER.info("LEDs stopped")
-            await asyncio.gather(animation, sound)
+            candies = await self.detect_candy()
+            LOGGER.info(f"Found candy: {candies}")
+            if any(candy.class_name == "treat" for candy in candies):
+                LOGGER.info("Treats!")
+                LOGGER.info("Animating!")
+                animation = asyncio.create_task(self.lights.animate())
+                sound = asyncio.create_task(self.speaker.play(SPOOKY_SOUND, 0, 0, 50))
+                await asyncio.sleep(5)
+                await self.lights.stop()
+                await self.lights.clear()
+                LOGGER.info("LEDs stopped")
+                await asyncio.gather(animation, sound)
+            elif any(candy.class_name == "trick" for candy in candies):
+                LOGGER.info("Tricks >:(")
+
+    async def detect_candy(self):
+        LOGGER.info("Looking for candy")
+        detections = await self.candy_detector.get_detections_from_camera(
+            self.camera.name
+        )
+        LOGGER.info(f"detected the following: {detections}")
+        dropped_candy = [
+            candy
+            for candy in detections
+            if candy.y_min < DROP_THRESHOLD and candy.confidence > 0.3
+        ]
+        return dropped_candy
 
 
 if __name__ == "__main__":

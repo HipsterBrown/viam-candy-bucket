@@ -27,11 +27,11 @@ if [ ! -d "$VIRTUAL_ENV" ]; then
   echo "creating virtualenv at $VIRTUAL_ENV"
   python3 -m venv $VIRTUAL_ENV
 fi
-if [ ! -f .installed ]; then
+if [ ! -f .installed ] || [ ! sha1sum -c .installed ]; then
   echo "installing dependencies from requirements.txt"
   $VIRTUAL_ENV/bin/pip install -r requirements.txt
 
   if [ $? -eq 0 ]; then
-    touch .installed
+    sha1sum requirements.txt > .installed
   fi
 fi

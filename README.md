@@ -14,11 +14,11 @@ A portable candy bucket that reacts to the type of candy dropped inside it!
 
 - [X] connect all the hardware
 - [X] arrange hardware in candy bucket
-- [ ] train the candy model
-- [ ] test it
+- [X] train the candy model
+- [X] test it
 
 ## Code
 
 1. [X] Create modular resource for ws2801 (addressable led pixels)
-2. [ ] Use ws2801 module and audioout module to create effects based on motion trigger (as well as capture image)
-3. [ ] Integrate ML model to trigger different effects
+2. [X] Use ws2801 module and audioout module to create effects based on motion trigger (as well as capture image)
+3. [X] Integrate ML model to trigger different effects
