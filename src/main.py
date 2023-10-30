@@ -15,7 +15,11 @@ from viam.logging import getLogger
 
 LOGGER = getLogger(__name__)
 SPOOKY_SOUND = os.path.abspath("./src/ghostly_whisper.mp3")
-DROP_THRESHOLD = 340
+START_SOUND = os.path.abspath("./src/trick_or_treat.wav")
+PENDING_SOUND = os.path.abspath("./src/ghost_woo.mp3")
+TREAT_SOUND = os.path.abspath("./src/treat.wav")
+TRICK_SOUND = os.path.abspath("./src/trick.mp3")
+DROP_THRESHOLD = 400
 
 
 async def main():
@@ -91,17 +95,14 @@ class CandyBucket:
         self.q = asyncio.Queue()
         self.last_tick = await self.motion_sensor.value()
 
-        LOGGER.info("Starting lights animation")
+        LOGGER.info("Starting lights and sound")
         animation = asyncio.create_task(self.lights.animate())
+        sound = asyncio.create_task(self.speaker.play(START_SOUND, 0, 0, 50))
         await asyncio.sleep(5)
         LOGGER.info("Stopping lights animation")
         await self.lights.stop()
         await self.lights.clear()
-        await animation
-        LOGGER.info("Stopped lights animation")
-
-        LOGGER.info("Playing spooky sound")
-        await self.speaker.play(SPOOKY_SOUND, 0, 0, 50)
+        await asyncio.gather(animation, sound)
 
         LOGGER.info("Starting working tasks")
         motion_task = asyncio.create_task(self.poll_motion())
@@ -116,24 +117,25 @@ class CandyBucket:
             next_tick = await self.motion_sensor.value()
             if next_tick != self.last_tick:
                 self.last_tick = next_tick
-                await self.q.put(self.last_tick)
+                await self.q.put(await self.camera.get_image())
                 LOGGER.info("Motion detected!")
+                await self.speaker.play(PENDING_SOUND, 0, 0, 50)
                 await asyncio.sleep(3)
             else:
-                await asyncio.sleep(0.1)
+                await asyncio.sleep(0.05)
 
     async def handle_interrupt(self) -> None:
         while True:
             LOGGER.info("Waiting for motion event")
-            _pin_value = await self.q.get()
+            captured_image = await self.q.get()
             LOGGER.info("Handling motion event")
-            candies = await self.detect_candy()
+            candies = await self.detect_candy(captured_image)
             LOGGER.info(f"Found candy: {candies}")
             if any(candy.class_name == "treat" for candy in candies):
                 LOGGER.info("Treats!")
                 LOGGER.info("Animating!")
                 animation = asyncio.create_task(self.lights.animate())
-                sound = asyncio.create_task(self.speaker.play(SPOOKY_SOUND, 0, 0, 50))
+                sound = asyncio.create_task(self.speaker.play(TREAT_SOUND, 0, 0, 50))
                 await asyncio.sleep(5)
                 await self.lights.stop()
                 await self.lights.clear()
@@ -141,17 +143,16 @@ class CandyBucket:
                 await asyncio.gather(animation, sound)
             elif any(candy.class_name == "trick" for candy in candies):
                 LOGGER.info("Tricks >:(")
+                await self.speaker.play(TRICK_SOUND, 0, 0, 50)
 
-    async def detect_candy(self):
+    async def detect_candy(self, image):
         LOGGER.info("Looking for candy")
-        detections = await self.candy_detector.get_detections_from_camera(
-            self.camera.name
-        )
+        detections = await self.candy_detector.get_detections(image)
         LOGGER.info(f"detected the following: {detections}")
         dropped_candy = [
             candy
             for candy in detections
-            if candy.y_min < DROP_THRESHOLD and candy.confidence > 0.3
+            if candy.y_min < DROP_THRESHOLD and candy.confidence > 0.2
         ]
         return dropped_candy
 
